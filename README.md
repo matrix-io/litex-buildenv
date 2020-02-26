@@ -42,7 +42,7 @@ The process above should result in 2 key files:
 - FPGA firmware: `/build/matrix_voice_base_lm32.minimal/gateware/top.bit`
 - BIOS+micropython firmware: `/build/matrix_voice_base_lm32.minimal/software/micropython/firmware.bin`
 
-## Set Up Raspberry Pi
+## 3. Set Up Raspberry Pi
 
 Attach the MATRIX Voice to your Raspberry Pi and install the initialization packages.
 
@@ -73,7 +73,7 @@ SSH back into your Pi from PC and clone repo for FLTERM
 git clone https://github.com/timvideos/flterm
 ```
 
-## Flash MATRIX Voice FPGA from Pi
+## 4. Flash MATRIX Voice FPGA from Pi
 
 Copy over the LiteX firmware files from your PC to your Pi by entering the following commands in your PC's terminal. Be sure to change `YOUR_PI_IP` to your Pi's IP address.
 
