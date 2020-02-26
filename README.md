@@ -1,121 +1,103 @@
-# LiteX Build Environment
+# Create SoC SoftCore on MATRIX Voice FPGA
+## 1. Clone Repo & Set up Build Environment
 
-[The LiteX Build Environment](https://github.com/timvideos/litex-buildenv)
-is a tool for easily developing
-[LiteX](https://github.com/enjoy-digital/litex) based systems. It was
-originally designed to make the [TimVideos' HDMI2USB](https://hdmi2usb.tv) easy
-to develop, but has now expanded to support multiple projects.
+The following steps are for the terminal on your personal computer.
 
-## Quick Links
-
- * [LiteX Build Environment Wiki](https://github.com/timvideos/litex-buildenv/wiki)
- * [Getting Started Guide](https://github.com/timvideos/litex-buildenv/wiki/Getting-Started)
-
- * TBD: [LiteX Build Environment Docs](https://litex-buildenv.readthedocs.io)
-
- * Dependency documentation
-   - Migen - [[Website](http://m-labs.hk/migen/index.html)] [[User Guide](http://m-labs.hk/migen/manual/)] [[Code Repository](https://github.com/m-labs/migen)]
-   - [Enjoy Digital Website](http://www.enjoy-digital.fr/)
-   - [LiteX GitHub Repository](https://github.com/enjoy-digital/litex)
-
- * Projects using LiteX Build Environment:
-   - [HDMI2USB](http://hdmi2usb.tv/) - The HDMI2USB project develops affordable hardware options to record and stream HD videos (from HDMI & DisplayPort sources) for conferences, meetings and user groups.
-   - [FuPy](https://fupy.github.io) - The aim of the FuPy project is to make MicroPython run on FPGAs using the LiteX & Migen+MiSoC technologies. This allows you to do full stack development (FPGA gateware & soft CPU firmware) in Python!
-
----
-
-## Important Terminology
-
- * [Gateware](https://github.com/timvideos/litex-buildenv/wiki/Gateware) - The FPGA configuration.
- * [Soft CPU](https://github.com/timvideos/litex-buildenv/wiki/Soft-CPU) - A CPU running inside the FPGA.
- * [Firmware](https://github.com/timvideos/litex-buildenv/wiki/Firmware) - The software running on the `soft CPU` inside the FPGA.
-
-## Structure
-
-![LiteX BuildEnv Structure Image](https://docs.google.com/drawings/d/e/2PACX-1vTfB_DQ3PXJWKrERnzkGoWdKsTfuI3Kk-9rF1oBDB8NM44qZefU_O_H7rdNoN5cIWZmqzfIm1ftz52B/pub?w=419&h=485)
-
-## [Boards](https://github.com/timvideos/litex-buildenv/wiki/Boards)
-
-The LiteX Build Environment supports a
-[large number of FPGA boards](https://github.com/timvideos/litex-buildenv/wiki/Boards),
-but not all boards can be used for all projects.
-
-## [Firmware](https://github.com/timvideos/litex-buildenv/wiki/Firmware)
-
- * [HDMI2USB](https://github.com/timvideos/litex-buildenv/wiki/HDMI2USB) - The firmware currently used for the HDMI2USB project.
- * [Bare Metal](https://github.com/timvideos/litex-buildenv/wiki/Bare-Metal) - Your own firmware running directly on the soft CPU in the FPGA.
- * [Zephyr](https://github.com/timvideos/litex-buildenv/wiki/Zephyr) - Support for [Zephyr RTOS](https://www.zephyrproject.org/).
- * [Linux](https://github.com/timvideos/litex-buildenv/wiki/Linux) - Support for Linux.
-
-## [Gateware](https://github.com/timvideos/litex-buildenv/wiki/Gateware)
-
-The Gateware is the configuration which generates our FPGA bitstream.  It
-is generally defined by a `platform` and a `target`.  You can find details
-for these under the `platform` and `target` directories in this project.
-
- * `Platform` - Represents the FPGA platform/devboard for which we will build
-   the bitstream. (i.e. `sim` (Verilator Simulator), `arty` , `opsis`)
- * `Target` - There are multiple targets for each platform, this represents an
-   SoC configuration for our target application. (i.e. `base`, `net`, `video`)
-
-## [Environment](https://github.com/timvideos/litex-buildenv/wiki/Environment)
-
-The environment is the shell setup and software packages provided by `litex-buildenv`
-which allow for litex based FPGA development.  It provides development, build
-and troubleshooting capabilities.
-
-To bootstrap or update your environment one generally does:
-
+Clone the repo
+```bash
+git clone https://github.com/matrix-io/litex-buildenv
 ```
-# Install system wide dependencies;
-#  * wget
-#  * bash
-#  * make
-#  * udev rules from https://github.com/litex-hub/litex-buildenv-udev
-#
-# On Debian you can use the ./scripts/debian-setup.sh script.
 
-# Download/update the litex specific packages (python, verilator, submodules etc)
+Enter the repo and export all relevant environmental variables
+```bash
+cd litex-buildenv/
+export CPU=vexriscv
+export CPU_VARIANT=minimal 
+export PLATFORM=matrix_voice
+export FIRMWARE=micropython
+export TARGET=base
+export HDMI2USB_UDEV_IGNORE=somevalue
+```
+
+Download the environment dependencies.
+```bash
 ./scripts/download-env.sh
+```
 
-# Enter the Dev/Debug/Build environment
-export PLATFORM=arty TARGET=net CPU=or1k
+Enter the build environment.
+```bash
 source ./scripts/enter-env.sh
 ```
 
-## [Applications](https://github.com/timvideos/litex-buildenv/wiki/Applications)
+## 2. Build Firmware Files
 
-FIXME: Put stuff here.
+Build the micropython environment, source the Xilinx ISE, and build the FPGA firmware
+```bash
+./scripts/build-micropython.sh 
+source /opt/Xilinx/14.7/ISE_DS/settings64.sh
+make gateware && make firmware && make image
+```
 
-![LiteX Application Relationship](https://docs.google.com/drawings/d/e/2PACX-1vTLVQXwkH3p5ZvN-7nIMxRXOyFEsg2x5_yrd3wREw3vaWr3Mc-_P7kfTbeQ--BN0k5VjQgxHchliyno/pub?w=1398&h=838)
+The process above should result in 2 key files:
+- FPGA firmware: `/build/matrix_voice_base_lm32.minimal/gateware/top.bit`
+- BIOS+micropython firmware: `/build/matrix_voice_base_lm32.minimal/software/micropython/firmware.bin`
 
-## [Other Topics](https://github.com/timvideos/litex-buildenv/wiki/Other-Topics)
+## Set Up Raspberry Pi
 
-FIXME: Put stuff here.
+Attach the MATRIX Voice to your Raspberry Pi and install the initialization packages.
 
----
+Add the MATRIX repository and key.
+```bash
+curl https://apt.matrix.one/doc/apt-key.gpg | sudo apt-key add -
+echo "deb https://apt.matrix.one/raspbian $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/matrixlabs.list
+```
 
-# License
+Update your repository and packages.
+```bash
+sudo apt-get update
+sudo apt-get upgrade
+```
 
-This code was developed by the people found in the [AUTHORS](AUTHORS) file
-(including major contributions from [EnjoyDigital](http://enjoy-digital.fr))
-and released under a [BSD/MIT license](LICENSE).
+Install MATRIX init package
+```bash
+sudo apt-get install matrixio-creator-init
+```
 
-Code under the [third_party](third_party/) directory comes from external
-sources and is available in their own licenses.
+Reboot your device for device initialization to occur.
+```bash
+sudo reboot
+```
 
-# Contact
+SSH back into your Pi from PC and clone repo for FLTERM
+```bash
+git clone https://github.com/timvideos/flterm
+```
 
-TimVideo.us:
+## Flash MATRIX Voice FPGA from Pi
 
- * Mailing List:
-   * https://groups.google.com/forum/#!forum/hdmi2usb
-     [[Join](https://groups.google.com/forum/#!forum/hdmi2usb/join)]
-   * hdmi2usb@googlegroups.com
+Copy over the LiteX firmware files from your PC to your Pi by entering the following commands in your PC's terminal. Be sure to change `YOUR_PI_IP` to your Pi's IP address.
 
- * IRC:
-   * irc://irc.freenode.net/#timvideos
-     [[Web Interface](http://webchat.freenode.net/?channels=timvideos)]
+```bash
+scp ./build/matrix_voice_base_lm32.minimal/software/micropython/firmware.bin pi@YOUR_PI_IP:/tmp
+scp ./build/matrix_voice_base_lm32.minimal/gateware/top.bit pi@YOUR_PI_IP:/tmp
+```
 
-EnjoyDigital:
- * florent@enjoy-digital.fr
+Use `xc3sprog` to flash the FPGA firmware to MATRIX Voice. In Pi's terminal, paste the following.
+```bash
+sudo xc3sprog -c matrix_voice /tmp/top.bit
+```
+If the above does not work, try the following instead.
+```bash
+sudo xc3sprog -c sysfsgpio_voice /tmp/top.bit
+```
+
+Next, use FLTERM to flash the BIOS & micropython firmware firmware
+```bash
+cd flterm
+./flterm --port=/dev/ttyAMA0 --speed=230400 --kernel=/tmp/firmware.bin
+```
+The result should look like the following
+
+![screenshot of working softcore](./litex_vexrisv.png)
+
+The above process has been tested with 
