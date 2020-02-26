@@ -98,6 +98,6 @@ cd flterm
 ```
 The result should look like the following
 
-![screenshot of working softcore](./litex_vexrisv.png)
+![screenshot of working softcore](litex_vexriscv.png)
 
 The above process has been tested with 
