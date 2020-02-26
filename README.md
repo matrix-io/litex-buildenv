@@ -46,8 +46,8 @@ make gateware && make firmware && make image
 ```
 
 The process above should result in 2 key files:
-- FPGA firmware: `/build/matrix_voice_base_lm32.minimal/gateware/top.bit`
-- BIOS+micropython firmware: `/build/matrix_voice_base_lm32.minimal/software/micropython/firmware.bin`
+- FPGA firmware: `/build/matrix_voice_base_vexriscv.minimal/gateware/top.bit`
+- BIOS+micropython firmware: `/build/matrix_voice_base_vexriscv.minimal/software/micropython/firmware.bin`
 
 ## 3. Set Up Raspberry Pi
 
@@ -70,6 +70,11 @@ Install MATRIX init package
 sudo apt-get install matrixio-creator-init
 ```
 
+Update boot overlay by adding the following to the end of `/boot/config.txt`
+```bash
+dtoverlay=disable-bt
+```
+
 Reboot your device for device initialization to occur.
 ```bash
 sudo reboot
@@ -85,8 +90,8 @@ git clone https://github.com/timvideos/flterm
 Copy over the LiteX firmware files from your PC to your Pi by entering the following commands in your PC's terminal. Be sure to change `YOUR_PI_IP` to your Pi's IP address.
 
 ```bash
-scp ./build/matrix_voice_base_lm32.minimal/software/micropython/firmware.bin pi@YOUR_PI_IP:/tmp
-scp ./build/matrix_voice_base_lm32.minimal/gateware/top.bit pi@YOUR_PI_IP:/tmp
+scp ./build/matrix_voice_base_vexriscv.minimal/software/micropython/firmware.bin pi@YOUR_PI_IP:/tmp
+scp ./build/matrix_voice_base_vexriscv.minimal/gateware/top.bit pi@YOUR_PI_IP:/tmp
 ```
 
 Use `xc3sprog` to flash the FPGA firmware to MATRIX Voice. In Pi's terminal, paste the following.
@@ -98,7 +103,7 @@ If the above does not work, try the following instead.
 sudo xc3sprog -c sysfsgpio_voice /tmp/top.bit
 ```
 
-Next, use FLTERM to flash the BIOS & micropython firmware firmware
+In another terminal session in the Pi, run FLTERM to flash the BIOS & micropython firmware
 ```bash
 cd flterm
 ./flterm --port=/dev/ttyAMA0 --speed=230400 --kernel=/tmp/firmware.bin
