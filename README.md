@@ -1,5 +1,9 @@
 # Create SoC SoftCore on MATRIX Voice FPGA
 
+FuPy/LiteX is a framework for building firmware for SoC softocres in FPGAs, as well as building the BIOS+micropython firmware for the softcore. It also includes frameworks like FLTERM for loading the firmware onto the FPGA.
+
+We will be using this framework to load a `vexriscv` softcore on the MATRIX Voice's Spartan-6 FPGA.
+
 First, follow [this guide](https://www.hackster.io/matrix-labs/get-started-with-fpga-programming-on-matrix-devices-525cd5) to install the Xilinx ISE on your PC to compile Spartan-6 FPGA firmware.
 
 ## 1. Clone Repo & Set up Build Environment
