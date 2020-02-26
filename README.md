@@ -1,4 +1,7 @@
 # Create SoC SoftCore on MATRIX Voice FPGA
+
+First, follow [this guide](https://www.hackster.io/matrix-labs/get-started-with-fpga-programming-on-matrix-devices-525cd5) to install the Xilinx ISE on your PC to compile Spartan-6 FPGA firmware.
+
 ## 1. Clone Repo & Set up Build Environment
 
 The following steps are for the terminal on your personal computer.
