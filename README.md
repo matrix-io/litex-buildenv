@@ -100,4 +100,4 @@ The result should look like the following
 
 ![screenshot of working softcore](litex_vexriscv.png)
 
-The above process has been tested with 
+The above process has been tested with lm32 MCU as well.
