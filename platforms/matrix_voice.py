@@ -55,6 +55,11 @@ _io = [
         Subsignal("odt", Pins("H14"), IOStandard("SSTL18_II"))
     ),
 
+    # everloop
+    ("everloop", 0,
+        Subsignal("ctl", Pins("A9"), IOStandard("LVCMOS33"),
+                  Misc("SLEW=FAST"))),
+
     # LED
     ("user_led", 0, Pins("T5"), IOStandard("LVCMOS33"), Drive(8)),
 ]
