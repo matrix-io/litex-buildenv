@@ -212,7 +212,7 @@ class BaseSoC(SoCSDRAM):
         self.add_constant("FLASH_BOOT_ADDRESS", self.flash_boot_address)
 
         # everloop
-        self.everloop = Everloop(platform, 16, platform.request("everloop"))
+        self.submodules.everloop = Everloop(platform, 16, platform.request("everloop"))
         self.add_wb_slave(mem_decoder(self.mem_map["everloop"]), self.everloop.bus)
 
         # sdram
