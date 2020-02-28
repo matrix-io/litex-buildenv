@@ -12,7 +12,7 @@ from migen import *
 from litex.soc.interconnect import wishbone
 
 class Everloop(Module):
-    def __init__(self, platform, nleds, everloop_pads):
+    def __init__(self, platform, clk_freq, nleds, everloop_pads):
         self.platform  = platform
         self.reset     = Signal()
         self.bus      = dbus = wishbone.Interface()
@@ -24,7 +24,7 @@ class Everloop(Module):
             "wb_everloop",
             name="everloop0",
             p_MEM_FILE_NAME="image.ram",
-            p_SYS_FREQ_HZ=75000000,
+            p_SYS_FREQ_HZ=clk_freq,
             p_ADDR_WIDTH=dbus.adr_width,
             p_DATA_WIDTH=dbus.data_width,
             p_N_LEDS=nleds,
@@ -41,7 +41,6 @@ class Everloop(Module):
             o_wb_ack_o=dbus.ack,
             o_everloop_ctl=everloop_pads.ctl,
         )
-
 
     @staticmethod
     def add_sources(platform):

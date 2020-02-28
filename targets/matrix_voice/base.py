@@ -167,14 +167,13 @@ class BaseSoC(SoCSDRAM):
         "spiflash",
         "ddrphy",
         "info",
-        "cas",
-        "everloop"
+        "cas"
     )
     csr_map_update(SoCSDRAM.csr_map, csr_peripherals)
 
     mem_map = {
         "spiflash": 0x20000000,
-        "everloop": 0x30000000,
+        "everloop": 0x80000000,
     }
     mem_map.update(SoCSDRAM.mem_map)
 
@@ -212,8 +211,10 @@ class BaseSoC(SoCSDRAM):
         self.add_constant("FLASH_BOOT_ADDRESS", self.flash_boot_address)
 
         # everloop
-        self.submodules.everloop = Everloop(platform, 16, platform.request("everloop"))
+        self.submodules.everloop = Everloop(platform, clk_freq, 16, platform.request("everloop"))
+        self.add_memory_region("everloop", self.mem_map["everloop"], 0x2000, type="io")
         self.add_wb_slave(mem_decoder(self.mem_map["everloop"]), self.everloop.bus)
+        self.add_csr("everloop")
 
         # sdram
         sdram_module = MT47H32M16(self.clk_freq, "1:2")
