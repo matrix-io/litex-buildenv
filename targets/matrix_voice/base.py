@@ -173,7 +173,7 @@ class BaseSoC(SoCSDRAM):
 
     mem_map = {
         "spiflash": 0x20000000,
-        "everloop": 0x80000000,
+        "everloop": 0xa0000000,
     }
     mem_map.update(SoCSDRAM.mem_map)
 

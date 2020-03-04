@@ -10,8 +10,9 @@ import os
 from migen import *
 
 from litex.soc.interconnect import wishbone
+from litex.soc.interconnect.csr import AutoCSR
 
-class Everloop(Module):
+class Everloop(Module,AutoCSR):
     def __init__(self, platform, clk_freq, nleds, everloop_pads):
         self.platform  = platform
         self.reset     = Signal()
