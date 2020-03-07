@@ -11,6 +11,8 @@ from migen import *
 
 from litex.soc.interconnect import wishbone
 from litex.soc.interconnect.csr import AutoCSR
+from litex.soc.interconnect.csr_eventmanager import *
+
 
 class Everloop(Module,AutoCSR):
     def __init__(self, platform, clk_freq, nleds, everloop_pads):
@@ -42,6 +44,15 @@ class Everloop(Module,AutoCSR):
             o_wb_ack_o=dbus.ack,
             o_everloop_ctl=everloop_pads.ctl,
         )
+        self._leds_count = CSRConstant(nleds)
+        self.enable = CSRStorage()
+        self.done   = CSRStatus()
+
+        self.mem_write = CSR()
+        self.mem_mask  = CSRStorage(dbus.data_width)
+        self.mem_value = CSRStorage(dbus.data_width)
+        self.mem_full  = CSRStatus()
+
 
     @staticmethod
     def add_sources(platform):

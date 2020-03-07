@@ -192,9 +192,6 @@ class BaseSoC(SoCSDRAM):
         self.submodules.crg = _CRG(platform, clk_freq)
         self.platform.add_period_constraint(self.crg.cd_sys.clk, 1e9/clk_freq)
 
-        # Basic peripherals
-        self.submodules.info = info.Info(platform, self.__class__.__name__)
-        self.submodules.cas = cas.ControlAndStatus(platform, clk_freq)
 
         # spi flash
         self.submodules.spiflash = spi_flash.SpiFlashSingle(
@@ -215,6 +212,10 @@ class BaseSoC(SoCSDRAM):
         self.add_memory_region("everloop", self.mem_map["everloop"], 0x2000, type="io")
         self.add_wb_slave(mem_decoder(self.mem_map["everloop"]), self.everloop.bus)
         self.add_csr("everloop")
+
+        # Basic peripherals
+        self.submodules.info = info.Info(platform, self.__class__.__name__)
+        self.submodules.cas = cas.ControlAndStatus(platform, clk_freq)
 
         # sdram
         sdram_module = MT47H32M16(self.clk_freq, "1:2")
